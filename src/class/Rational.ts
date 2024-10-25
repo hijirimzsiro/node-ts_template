@@ -3,7 +3,6 @@ export class Rational {
     denominator: number;
 
     constructor(numerator: number, denominator: number) {
-        // 檢查分母是否為 0
         if (denominator === 0) {
             throw new Error("Denominator cannot be zero");
         }
@@ -11,23 +10,61 @@ export class Rational {
         this.denominator = denominator;
     }
 
-    // 轉換為字串表示
+    static parseRational(numStr: string[], denomStr: string[]): Rational {
+        const numerator = parseInt(numStr.join(''));
+        const denominator = parseInt(denomStr.join(''));
+        return new Rational(numerator, denominator);
+    }
+
+    // 簡化分數
+    getSimplified(): Rational {
+        const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+        const divisor = gcd(this.numerator, this.denominator);
+        return new Rational(this.numerator / divisor, this.denominator / divisor);
+    }
+
+    add(r: Rational): Rational {
+        const newNumerator = this.numerator * r.denominator + r.numerator * this.denominator;
+        const newDenominator = this.denominator * r.denominator;
+        return new Rational(newNumerator, newDenominator).getSimplified();
+    }
+
+    subtract(r: Rational): Rational {
+        const newNumerator = this.numerator * r.denominator - r.numerator * this.denominator;
+        const newDenominator = this.denominator * r.denominator;
+        return new Rational(newNumerator, newDenominator).getSimplified();
+    }
+
+    multiply(r: Rational): Rational {
+        const newNumerator = this.numerator * r.numerator;
+        const newDenominator = this.denominator * r.denominator;
+        return new Rational(newNumerator, newDenominator).getSimplified();
+    }
+
+    divide(r: Rational): Rational {
+        if (r.numerator === 0) {
+            throw new Error("Cannot divide by zero");
+        }
+        const newNumerator = this.numerator * r.denominator;
+        const newDenominator = this.denominator * r.numerator;
+        return new Rational(newNumerator, newDenominator).getSimplified();
+    }
+
+    equals(r: Rational): boolean {
+        const a = this.getSimplified();
+        const b = r.getSimplified();
+        return a.numerator === b.numerator && a.denominator === b.denominator;
+    }
+
+    isWhole(): boolean {
+        return this.getSimplified().denominator === 1;
+    }
+
+    isDecimal(): boolean {
+        return this.denominator !== 1;
+    }
+
     toString(): string {
         return `${this.numerator}/${this.denominator}`;
-    }
-
-    // 這個方法執行任務，並返回字串表示
-    doTask(): string {
-        return this.toString();
-    }
-
-    // 其他你可能需要的方法，可以根據需要添加
-    normalize(): Rational {
-        const gcd = this.greatestCommonDivisor(this.numerator, this.denominator);
-        return new Rational(this.numerator / gcd, this.denominator / gcd);
-    }
-
-    private greatestCommonDivisor(a: number, b: number): number {
-        return b === 0 ? Math.abs(a) : this.greatestCommonDivisor(b, a % b);
     }
 }
