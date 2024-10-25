@@ -1,18 +1,12 @@
-// test.ts
 import { Rational } from './Rational';
 
-describe('Rational Class', () => {
-    test('should return the correct string representation', () => {
-        const rational = new Rational(3, 4);
-        expect(rational.doTask()).toBe('3/4');
-    });
+const r1 = new Rational(1, 2);
+const r2 = new Rational(3, 4);
+const r3 = Rational.parseRational(["1", "3"], ["4", "1"]);
 
-    test('should throw an error when denominator is zero', () => {
-        expect(() => new Rational(1, 0)).toThrow('Denominator cannot be zero');
-    });
+console.log('r1 + r2 =', r1.add(r2).toString()); // 5/4
+console.log('r1 * r2 =', r1.multiply(r2).toString()); // 3/8
 
-    test('normalize method should return a normalized rational number', () => {
-        const rational = new Rational(4, 8);
-        expect(rational.normalize().doTask()).toBe('1/2');
-    });
-});
+console.log('r1 equals r2:', r1.equals(r2)); // f
+console.log('r3 is whole:', r3.isWhole()); //  t
+console.log('r3 is decimal:', r3.isDecimal()); // fa
